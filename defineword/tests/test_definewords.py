@@ -5,6 +5,9 @@ from defineword import getSpecialDefinition, addSpecialDefinition, deleteSpecial
 
 word = 'test'
 definition = 'this is my test definition'
+word2 = 'test2'
+definition2 = 'this is my test2 definition'
+
 dictionary = 'testfile.json'
 
 @pytest.fixture(scope='module')
@@ -20,6 +23,12 @@ def resource_setup(request):
 
 def test_addSpecialDefinition(resource_setup):
     addSpecialDefinition(dictionary, word, definition)
+    result = getSpecialDefinition(dictionary, word)
+    assert definition == result
+    addSpecialDefinition(dictionary, word2, definition2)
+    result2 = getSpecialDefinition(dictionary, word2)
+    assert definition2 == result2
+    #ensure that first entry is still there.
     result = getSpecialDefinition(dictionary, word)
     assert definition == result
 

@@ -19,12 +19,14 @@ def getSpecialDefinition(dictionary, word):
 
 def addSpecialDefinition(dictionary, word, definition):
     data = {}
+    if os.path.exists(dictionary):
+        with open(dictionary) as original_json:
+            try:
+                data = json.load(original_json)
+            except:
+                pass
+    data[word] = definition
     with open(dictionary, 'w+') as json_data:
-        try:
-            data = json.load(json_data)
-        except:
-            pass
-        data[word] = definition
         json.dump(data, json_data)
 
 def deleteSpecialDefinition(dictionary, word):
