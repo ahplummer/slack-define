@@ -1,0 +1,15 @@
+version: '3.6'
+
+services:
+
+  defineword:
+    container_name: defineword.server
+    build:
+      context: ./defineword
+    ports:
+      - 8511:8511
+    volumes:
+      - ./defineword/data:/defineword/data
+    environment:
+      - APIKEY=${APIKEY}
+    command: tail -F
