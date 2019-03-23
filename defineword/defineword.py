@@ -92,7 +92,7 @@ def addspecial():
             word = parts[0]
             definition = parts[1]
             addSpecialDefinition(dictionaryfile, word, definition)
-            return wrapJsonReturn("You've added that definition now, so feel free to do '/definespecial " + word + "' in Slack.")
+            return wrapJsonReturn("You've added that definition now, so feel free to do '/getspecialword " + word + "' in Slack.")
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8511)
