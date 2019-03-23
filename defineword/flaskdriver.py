@@ -1,19 +1,25 @@
 from flask import request, jsonify, Flask
 import os
 from definewordJSON import JSONBacking
+from definewordShelve import ShelveBacking
 from definewordABC import AbstractBacking
+from pylogger import projectLogger
 import requests, json
 
 app = Flask(__name__)
 backing = None
-jsondictionary = 'data/specialwords.json'
+filename = 'data/specialwords.json'
+
 if 'BACKING' in os.environ:
     if os.environ['BACKING'] == 'SHELVE':
-        pass #build out the SHELVE piece here.
+        projectLogger().info('Standing up SHELVE backing')
+        backing = ShelveBacking(filename)
     else:
-        backing = JSONBacking(jsondictionary)
+        backing = JSONBacking(filename)
+        projectLogger().info('Standing up JSON backing at: ' + filename)
 else:
-    backing = JSONBacking(jsondictionary)
+    backing = JSONBacking(filename)
+    projectLogger().info('Standing up JSON backing at: ' + filename)
 
 def wrapJsonReturn(message):
     result = {
