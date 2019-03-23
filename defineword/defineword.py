@@ -1,43 +1,58 @@
-from flask import Flask
-from flask import request
-import requests
-import json
-import os
+from flask import request, jsonify, Flask
+import requests, json, os, threading, errno
+
+mutex = threading.Lock()
 
 app = Flask(__name__)
 dictionaryfile = 'data/specialwords.json'
 def getSpecialDefinition(dictionary, word):
     result = "None - perhaps you need to create a definition"
     if os.path.exists(dictionary):
-        with open(dictionary) as json_data:
-            data = json.load(json_data)
-            try:
-                result = data[word]
-            except:
-                pass
+        with mutex:
+            with open(dictionary) as json_data:
+                data = json.load(json_data)
+                try:
+                    result = data[word]
+                except:
+                    pass
     return result
 
 def addSpecialDefinition(dictionary, word, definition):
     data = {}
-    if os.path.exists(dictionary):
-        with open(dictionary) as original_json:
+    with mutex:
+        if not os.path.exists(os.path.dirname(dictionary)):
             try:
-                data = json.load(original_json)
+                os.makedirs(os.path.dirname(dictionary))
             except:
                 pass
-    data[word] = definition
-    with open(dictionary, 'w+') as json_data:
-        json.dump(data, json_data)
+        if os.path.exists(dictionary):
+            with open(dictionary) as original_json:
+                try:
+                    data = json.load(original_json)
+                except:
+                    pass
+        data[word] = definition
+        with open(dictionary, 'w+') as json_data:
+            json.dump(data, json_data)
 
 def deleteSpecialDefinition(dictionary, word):
     result = "Could not delete: " + word
-    with open(dictionary) as json_data:
-        data = json.load(json_data)
-        del data[word]
-        result = "Deleted " + word
-    with open(dictionary, 'w') as newfile:
-        json.dump(data, newfile)
-    return result
+    with mutex:
+        with open(dictionary) as json_data:
+            data = json.load(json_data)
+            del data[word]
+            result = "Deleted " + word
+        with open(dictionary, 'w') as newfile:
+            json.dump(data, newfile)
+        return result
+
+def wrapJsonReturn(message):
+    result = {
+        "response_type": "in_channel",
+        "text": message
+    }
+    return jsonify(result)
+
 
 @app.route("/define", methods = ['POST'])
 def define():
@@ -54,7 +69,7 @@ def define():
         jsonload = json.loads(resp.text)
         if len(jsonload) > 0:
             for defn in jsonload[0]['shortdef']:
-                return 'One definition for ' + word + ' is: ' + defn + '.'
+                return wrapJsonReturn('One definition for ' + word + ' is: ' + defn + '.')
 
 @app.route("/definespecial", methods = ['POST'])
 def definedi():
@@ -63,7 +78,7 @@ def definedi():
         data = request.form
         word = data['text']
         defn = getSpecialDefinition(dictionaryfile, word)
-        return 'The special definition for ' + word + ' is: ' + defn + '.'
+        return wrapJsonReturn('The special definition for ' + word + ' is: ' + defn + '.')
 
 @app.route("/addspecial", methods = ['POST'])
 def addspecial():
@@ -77,7 +92,7 @@ def addspecial():
             word = parts[0]
             definition = parts[1]
             addSpecialDefinition(dictionaryfile, word, definition)
-            return "You've added that definition now, so feel free to do '/definespecial " + word + "' in Slack."
+            return wrapJsonReturn("You've added that definition now, so feel free to do '/definespecial " + word + "' in Slack.")
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8511)

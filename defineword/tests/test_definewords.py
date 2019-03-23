@@ -1,7 +1,7 @@
 import pytest, sys, os
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + '/../')
-from defineword import getSpecialDefinition, addSpecialDefinition, deleteSpecialDefinition
+from defineword import getSpecialDefinition, addSpecialDefinition, deleteSpecialDefinition, wrapJsonReturn
 
 word = 'test'
 definition = 'this is my test definition'
@@ -36,7 +36,7 @@ def test_getSpecialDefinition(resource_setup):
     result = getSpecialDefinition(dictionary, word)
     assert definition == result
 
-
 def test_deleteSpecialDefinition(resource_setup):
     result = deleteSpecialDefinition(dictionary, word)
     assert result == "Deleted " + word
+
