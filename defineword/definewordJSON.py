@@ -3,10 +3,12 @@ from definewordABC import AbstractBacking
 
 class JSONBacking(AbstractBacking):
     def __init__(self, dictionaryName):
+        super().__init__(dictionaryName)
         self._dictionaryName = dictionaryName
         self._mutex = threading.Lock()
 
     def getSpecialDefinition(self, word):
+        super().getSpecialDefinition(word)
         result = "None - perhaps you need to create a definition"
         if os.path.exists(self._dictionaryName):
             with self._mutex:
@@ -19,6 +21,7 @@ class JSONBacking(AbstractBacking):
         return result
 
     def addSpecialDefinition(self, word, definition):
+        super().addSpecialDefinition(word, definition)
         data = {}
         with self._mutex:
             if not os.path.exists(os.path.dirname(self._dictionaryName)):
@@ -37,6 +40,7 @@ class JSONBacking(AbstractBacking):
                 json.dump(data, json_data)
 
     def deleteSpecialDefinition(self, word):
+        super().deleteSpecialDefinition(word)
         result = "Could not delete: " + word
         with self._mutex:
             with open(self._dictionaryName) as json_data:
