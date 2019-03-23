@@ -12,7 +12,7 @@ docker-compose up -d --build
 ```
 * Run docker image via docker-compose:
 ```
-docker-compose exec defineword python3 defineword.py
+docker-compose exec defineword python3 flaskdriver.py
 ```
 * Test with curl
 ```
