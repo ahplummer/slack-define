@@ -7,6 +7,23 @@ class JSONBacking(AbstractBacking):
         self._dictionaryName = dictionaryName
         self._mutex = threading.Lock()
 
+    def listSpecialWords(self, total):
+        result = None
+        retrieved = 0
+        if os.path.exists(self._dictionaryName):
+            with self._mutex:
+                with open(self._dictionaryName) as json_data:
+                    data = json.load(json_data)
+                    for key in data.keys():
+                        retrieved += 1
+                        if result == None:
+                            result = key
+                        else:
+                            result = result + ', ' + key
+                        if retrieved >= total:
+                            break
+        return result
+
     def getSpecialDefinition(self, word):
         super().getSpecialDefinition(word)
         result = "None - perhaps you need to create a definition"

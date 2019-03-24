@@ -7,6 +7,8 @@ word = 'test'
 definition = 'this is my test definition'
 word2 = 'test2'
 definition2 = 'this is my test2 definition'
+word3 = 'test3'
+definition3 = 'this is my test3 definition'
 
 dictionary = 'testfile.json'
 jsonBacking = JSONBacking(dictionary)
@@ -32,6 +34,11 @@ def test_addSpecialDefinition(resource_setup):
     #ensure that first entry is still there.
     result = jsonBacking.getSpecialDefinition(word)
     assert definition == result
+
+def test_listSpecialWords(resource_setup):
+    jsonBacking.addSpecialDefinition(word3, definition3)
+    result = jsonBacking.listSpecialWords(2)
+    assert result == "test, test2"
 
 def test_getSpecialDefinition(resource_setup):
     result = jsonBacking.getSpecialDefinition(word)

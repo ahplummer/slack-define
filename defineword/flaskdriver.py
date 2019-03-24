@@ -60,5 +60,16 @@ def addspecialword():
             backing.addSpecialDefinition(word, definition)
             return wrapJsonReturn("You've added that definition now, so feel free to do '/getspecialword " + word + "' in Slack.")
 
+@app.route("/listspecialwords", methods = ['POST'])
+def listspecialwords():
+    if request.method == 'POST':
+        data = request.form
+        try:
+            total = int(data['text'])
+            result = backing.listSpecialWords(total)
+        except:
+            result = "Use a number instead of text as a parameter..."
+            
+        return wrapJsonReturn(result)
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8511)
