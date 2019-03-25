@@ -32,11 +32,15 @@ def define():
         url = url.replace('<word>', word)
         url = url.replace('<apikey>', os.environ['APIKEY'])
         resp = requests.get(url)
-        jsonload = json.loads(resp.text)
-        if len(jsonload) > 0:
-            for defn in jsonload[0]['shortdef']:
-                return wrapJsonReturn('Official Definition for ' + word + ' is: ' + defn + '.')
-
+        try:
+            jsonload = json.loads(resp.text)
+            if len(jsonload) > 0:
+                for defn in jsonload[0]['shortdef']:
+                    return wrapJsonReturn('Official Definition for ' + word + ' is: ' + defn + '.')
+        except:
+            print('Error: ' + resp.text)
+            return wrapJsonReturn('Look at the logs, there was an exception....')
+        
 @app.route("/getspecialword", methods = ['POST'])
 def getspecialword():
     # here we want to get the value of user (i.e. ?user=some-value)
@@ -69,7 +73,7 @@ def listspecialwords():
             result = backing.listSpecialWords(total)
         except:
             result = "Use a number instead of text as a parameter..."
-            
+
         return wrapJsonReturn(result)
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8511)
