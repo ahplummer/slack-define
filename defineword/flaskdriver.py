@@ -39,8 +39,8 @@ def define():
                     return wrapJsonReturn('Official Definition for ' + word + ' is: ' + defn + '.')
         except:
             print('Error: ' + resp.text)
-            return wrapJsonReturn('Look at the logs, there was an exception....')
-        
+            return wrapJsonReturn('That word is not at Merriam/Webster, or there was some nasty exception....¯\_(ツ)_/¯')
+
 @app.route("/getspecialword", methods = ['POST'])
 def getspecialword():
     # here we want to get the value of user (i.e. ?user=some-value)
