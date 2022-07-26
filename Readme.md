@@ -26,3 +26,30 @@ curl --data "text=mytest=super awesome definition" http://127.0.0.1:8511/addspec
 curl --data "text=mytest" http://127.0.0.1:8511/definespecial
 ```
 * Output should look like: `The special definition for mytest is: super awesome definition.`
+
+## Local execution
+* Build up Venv:
+```
+python3 -m venv .venv3
+```
+* Activate virtual env:
+```
+source .venv3/bin/activate
+```
+* Install requirements:
+```
+pip3 install -r defineword/requirements.txt
+```
+* Run:
+```
+cd defineword
+python3 flaskdriver.py
+```
+* Test:
+```
+curl --data "text=mytest=super awesome definition" http://127.0.0.1:8511/addspecialword
+```
+* Validate:
+```
+curl --data "text=mytest" http://127.0.0.1:8511/getspecialword
+```

@@ -4,14 +4,12 @@ certifi==2018.11.29
 chardet==3.0.4
 Click==7.0
 Flask==1.0.2
-get==2018.11.19
 idna==2.8
 itsdangerous==1.1.0
 Jinja2==2.10
 MarkupSafe==1.1.1
 more-itertools==6.0.0
 pluggy==0.9.0
-post==2018.11.20
 public==2018.11.20
 py==1.8.0
 pytest==4.3.1
