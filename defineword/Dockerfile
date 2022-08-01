@@ -1,9 +1,10 @@
-FROM alpine:3.9
+FROM python:3.8-slim-buster
 
-ADD ./*.* /defineword/
+WORKDIR /app
 
-RUN apk add --no-cache python3 bash
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
 
-RUN cd /defineword && pip3 install -r requirements.txt
+COPY . .
 
-WORKDIR /defineword
+CMD [ "python3", "flaskdriver.py"]
